@@ -17,6 +17,11 @@ namespace DependencyInjectionExamples.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IWeatherForecastService _weatherForecastService;
+        public WeatherForecastController(IWeatherForecastService weatherForecastService)
+        {
+            _weatherForecastService = weatherForecastService;
+        }
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IServiceProvider serviceProvider)
         {
@@ -36,6 +41,14 @@ namespace DependencyInjectionExamples.Controllers
         {
             //Aqui usamos o service provider para criar uma nova instância do nosso serviço.
             IWeatherForecastService weatherForecastService = _serviceProvider.GetRequiredService<IWeatherForecastService>();
+            return weatherForecastService.GetBySummary(summary);
+        }
+
+        [HttpGet("{summary}/test")]
+        public IEnumerable<WeatherForecast> GetWeather(string summary)
+        {
+            //Aqui o serviço é injetado diretamente no construtor da controller, sendo acessível para todos os métodos.
+            IWeatherForecastService weatherForecastService = _weatherForecastService;
             return weatherForecastService.GetBySummary(summary);
         }
     }
